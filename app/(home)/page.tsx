@@ -3,9 +3,11 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { SignInButton, SignUpButton, Show, UserButton } from "@clerk/nextjs"
 import { Zap, Brain, Trophy, Users } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import Link from "next/link"
 
 export default function Page() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -51,15 +53,28 @@ export default function Page() {
               className="hidden dark:block"
             />
           </div>
-          <button
-            className={[
-              "rounded-md border border-input px-4 py-2 transition-all duration-300 hover:bg-accent",
-              isScrolled ? "shadow-sm" : "",
-            ].join(" ")}
-          >
-            {/* Clerk Sign-In Button Placeholder */}
-            Sign In / Sign Up
-          </button>
+          <div className={isScrolled ? "shadow-sm" : ""}>
+            <Show when="signed-out">
+              <div className="flex items-center gap-2">
+                <SignInButton mode="modal">
+                  <Button variant="outline">Sign In</Button>
+                </SignInButton>
+                <SignUpButton mode="modal">
+                  <Button>Sign Up</Button>
+                </SignUpButton>
+              </div>
+            </Show>
+            <Show when="signed-in">
+              <div className="my-auto flex items-center">
+                <Link href="/dashboard">
+                <Button variant="outline" className="mr-2 my-auto">
+                  Dashboard
+                </Button>
+                </Link>
+                <UserButton />
+              </div>
+            </Show>
+          </div>
         </div>
       </header>
 

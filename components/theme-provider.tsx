@@ -1,23 +1,47 @@
 "use client"
 
 import * as React from "react"
-import { ThemeProvider as NextThemesProvider, useTheme } from "next-themes"
 
-function ThemeProvider({
-  children,
-  ...props
-}: React.ComponentProps<typeof NextThemesProvider>) {
+type Theme = "light" | "dark"
+
+type ThemeContextValue = {
+  resolvedTheme: Theme
+  setTheme: (theme: Theme) => void
+}
+
+const ThemeContext = React.createContext<ThemeContextValue | null>(null)
+
+function getSystemTheme(): Theme {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light"
+}
+
+function ThemeProvider({ children }: { children: React.ReactNode }) {
+  const [resolvedTheme, setResolvedTheme] = React.useState<Theme>("light")
+
+  React.useEffect(() => {
+    const storedTheme = window.localStorage.getItem("theme")
+    const theme =
+      storedTheme === "dark" || storedTheme === "light"
+        ? storedTheme
+        : getSystemTheme()
+
+    setResolvedTheme(theme)
+    document.documentElement.classList.toggle("dark", theme === "dark")
+  }, [])
+
+  function setTheme(theme: Theme) {
+    setResolvedTheme(theme)
+    window.localStorage.setItem("theme", theme)
+    document.documentElement.classList.toggle("dark", theme === "dark")
+  }
+
   return (
-    <NextThemesProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-      {...props}
-    >
+    <ThemeContext.Provider value={{ resolvedTheme, setTheme }}>
       <ThemeHotkey />
       {children}
-    </NextThemesProvider>
+    </ThemeContext.Provider>
   )
 }
 
@@ -35,7 +59,13 @@ function isTypingTarget(target: EventTarget | null) {
 }
 
 function ThemeHotkey() {
-  const { resolvedTheme, setTheme } = useTheme()
+  const theme = React.useContext(ThemeContext)
+
+  if (!theme) {
+    throw new Error("ThemeHotkey must be used inside ThemeProvider")
+  }
+
+  const { resolvedTheme, setTheme } = theme
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
