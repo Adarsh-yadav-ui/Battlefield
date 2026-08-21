@@ -39,14 +39,14 @@ export default function Page() {
         >
           <div className="flex items-center gap-2">
             <Image
-              src="/logo_dark.svg"
+              src="/logo_light.svg"
               alt="Battlefield Logo"
               width={220}
               height={400}
               className="block dark:hidden"
             />
             <Image
-              src="/logo_light.svg"
+              src="/logo_dark.svg"
               alt="Battlefield Logo"
               width={220}
               height={400}
