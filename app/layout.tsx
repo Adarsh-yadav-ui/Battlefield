@@ -11,6 +11,7 @@ import type { Metadata } from "next"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
+import ConvexClientProvider from "@/providers/ConvexProviderWithClerk"
 
 const ibmPlexSansHeading = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -55,7 +56,9 @@ export default function RootLayout({
     >
       <body>
         <ClerkProvider appearance={{ theme: shadcn }}>
-          <ThemeProvider>{children}</ThemeProvider>
+          <ConvexClientProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ConvexClientProvider>
         </ClerkProvider>
       </body>
     </html>

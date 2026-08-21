@@ -8,10 +8,11 @@ import { Zap, Brain, Trophy, Users } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { useCurrentUser } from "@/lib/useCurrentUser"
 
 export default function Page() {
   const [isScrolled, setIsScrolled] = useState(false)
-
+  const { isLoading, isAuthenticated } = useCurrentUser();
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 24)
@@ -27,6 +28,7 @@ export default function Page() {
 
   return (
     <div className="flex min-h-svh flex-col">
+      {isAuthenticated ? "Authenticated" : "Not Authenticated"}
       {/* Header */}
       <header className="sticky top-0 z-50 px-4 pt-0 transition-all duration-500 ease-out sm:px-6 lg:px-8">
         <div
